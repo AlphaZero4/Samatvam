@@ -1,0 +1,182 @@
+---
+import { Image } from 'astro:assets';
+import ThemeToggle from './ThemeToggle.astro';
+import { primaryNav, exploreNav, locations, tel } from '@/data/site';
+import { url, isActive } from '@/lib/url';
+import { media } from '@/lib/media';
+
+const path = Astro.url.pathname;
+const helpline = locations[0]!.helpline;
+---
+
+<header
+  class="sticky top-0 z-40 border-b border-line/70 bg-bg/80 backdrop-blur-xl backdrop-saturate-150"
+  transition:name="site-header"
+  transition:animate="none"
+  data-header
+>
+  <div class="hidden border-b border-line/60 text-xs text-muted sm:block">
+    <div class="container-page flex h-8 items-center justify-between gap-4">
+      <p>Endocrinology · Diabetes · Since 1987 · Bangalore</p>
+      <a href={tel(helpline)} class="font-medium text-fg transition hover:text-accent">
+        24 Hour Helpline: <span class="tabular-nums">{helpline}</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="container-page flex h-16 items-center justify-between gap-4 lg:h-20">
+    <a href={url('/')} class="group flex shrink-0 items-center gap-3" aria-label="Samatvam home">
+      <span class="rounded-lg bg-white px-2 py-1 shadow-sm ring-1 ring-black/5 transition group-hover:shadow-md">
+        <Image
+          src={media('samatvam_logo')}
+          alt=""
+          class="h-8 w-auto lg:h-10"
+          width={170}
+          densities={[1, 2]}
+          loading="eager"
+        />
+      </span>
+      <span class="hidden items-center gap-2 md:flex xl:hidden 2xl:flex">
+        <span class="rounded-lg bg-white px-1.5 py-1 shadow-sm ring-1 ring-black/5">
+          <Image
+            src={media('stop-diabetes')}
+            alt="Stop Diabetes"
+            class="h-8 w-auto lg:h-10"
+            width={70}
+            densities={[1, 2]}
+          />
+        </span>
+        <span class="rounded-lg bg-white px-2 py-1 shadow-sm ring-1 ring-black/5">
+          <Image
+            src={media('janana-logo')}
+            alt="Jnana Sanjeevini"
+            class="h-8 w-auto lg:h-10"
+            width={170}
+            densities={[1, 2]}
+          />
+        </span>
+      </span>
+    </a>
+
+    <nav aria-label="Primary" class="hidden xl:block">
+      <ul class="flex items-center gap-0.5 text-sm font-medium whitespace-nowrap">
+        {primaryNav.map((item) => {
+          const active = isActive(item.href, path);
+          return (
+            <li>
+              <a
+                href={url(item.href)}
+                aria-current={active ? 'page' : undefined}
+                class:list={[
+                  'relative rounded-full px-2.5 py-2 transition duration-300 2xl:px-3',
+                  active ? 'bg-brand/10 text-brand' : 'text-muted hover:bg-bg-soft hover:text-fg',
+                ]}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <ThemeToggle />
+      <button
+        type="button"
+        class="grid size-10 place-items-center rounded-full border border-line bg-bg-elev transition hover:border-accent hover:text-accent xl:hidden"
+        aria-label="Open menu"
+        aria-haspopup="dialog"
+        data-menu-open
+      >
+        <svg
+          viewBox="0 0 24 24"
+          class="size-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <dialog
+    class="menu-dialog m-0 h-dvh max-h-none w-full max-w-none bg-bg p-0 text-fg backdrop:bg-black/40"
+    aria-label="Site menu"
+    data-menu
+  >
+    <div class="container-page flex h-16 items-center justify-between">
+      <span class="font-display text-xl font-bold text-brand">Menu</span>
+      <button
+        type="button"
+        class="grid size-10 place-items-center rounded-full border border-line"
+        aria-label="Close menu"
+        data-menu-close
+      >
+        <svg
+          viewBox="0 0 24 24"
+          class="size-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="container-page grid gap-10 pt-4 pb-16 sm:grid-cols-2">
+      <ul class="space-y-1">
+        {primaryNav.map((item, i) => (
+          <li class="menu-item" style={`--i:${i}`}>
+            <a
+              href={url(item.href)}
+              aria-current={isActive(item.href, path) ? 'page' : undefined}
+              class="block rounded-xl px-3 py-2 font-display text-2xl font-semibold transition hover:bg-bg-soft hover:text-accent aria-[current=page]:text-accent"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div>
+        <p class="eyebrow mb-3 px-3">Explore</p>
+        <ul class="grid gap-1">
+          {exploreNav.map((item, i) => (
+            <li class="menu-item" style={`--i:${i + 4}`}>
+              <a href={url(item.href)} class="block rounded-xl px-3 py-2 transition hover:bg-bg-soft">
+                <span class="font-medium">{item.label}</span>
+                <span class="block text-sm text-muted">{item.blurb}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </dialog>
+</header>
+
+<style>
+  .menu-dialog[open] {
+    animation: menu-in 0.45s var(--ease-out-expo);
+  }
+  .menu-dialog[open] .menu-item {
+    animation: menu-item-in 0.6s var(--ease-out-expo) both;
+    animation-delay: calc(var(--i) * 35ms + 80ms);
+  }
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+  }
+  @keyframes menu-item-in {
+    from {
+      opacity: 0;
+      transform: translateX(-14px);
+    }
+  }
+</style>

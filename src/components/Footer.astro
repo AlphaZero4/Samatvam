@@ -1,0 +1,83 @@
+---
+import { Image } from 'astro:assets';
+import { site, primaryNav, exploreNav, locations, tel } from '@/data/site';
+import { url } from '@/lib/url';
+import { media } from '@/lib/media';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-line bg-bg-soft">
+  <div class="container-page grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
+    <div class="space-y-5">
+      <span class="inline-block rounded-xl bg-white px-3 py-2 shadow-sm ring-1 ring-black/5">
+        <Image
+          src={media('samatvam_logo')}
+          alt="Samatvam"
+          class="h-10 w-auto"
+          width={170}
+          densities={[1, 2]}
+        />
+      </span>
+      <p class="max-w-xs text-sm leading-relaxed text-muted">
+        {site.fullName}. A registered non-profit charitable public trust serving people with diabetes and
+        endocrine disorders since {site.founded}.
+      </p>
+      <p class="font-display text-lg font-semibold text-brand">“{site.tagline}”</p>
+    </div>
+
+    <nav aria-label="Footer: pages">
+      <p class="eyebrow mb-4">Pages</p>
+      <ul class="space-y-2 text-sm">
+        {primaryNav.map((n) => (
+          <li>
+            <a href={url(n.href)} class="link-underline text-muted transition hover:text-fg">
+              {n.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav aria-label="Footer: explore">
+      <p class="eyebrow mb-4">Explore</p>
+      <ul class="space-y-2 text-sm">
+        {exploreNav.map((n) => (
+          <li>
+            <a href={url(n.href)} class="link-underline text-muted transition hover:text-fg">
+              {n.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div>
+      <p class="eyebrow mb-4">24 Hour Helplines</p>
+      <ul class="space-y-3 text-sm">
+        {locations.map((l) => (
+          <li class="flex items-baseline justify-between gap-4 border-b border-line/70 pb-3">
+            <span class="text-muted">{l.area}</span>
+            <a href={tel(l.helpline)} class="font-semibold tabular-nums transition hover:text-accent">
+              {l.helpline}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a
+        href={`mailto:${site.email}`}
+        class="mt-4 inline-block text-sm font-medium text-accent-strong dark:text-accent"
+      >
+        {site.email}
+      </a>
+    </div>
+  </div>
+  <div class="border-t border-line">
+    <div class="container-page flex flex-col gap-2 py-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+      <p>
+        © {year} {site.fullName}. All rights reserved.
+      </p>
+      <p>We plan, He steers · We pray, He wills · We care, He heals.</p>
+    </div>
+  </div>
+</footer>

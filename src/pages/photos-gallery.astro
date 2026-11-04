@@ -1,0 +1,133 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import RelatedLinks from '@/components/RelatedLinks.astro';
+import { videos, galleryPhotos } from '@/data/content';
+import { media } from '@/lib/media';
+---
+
+<BaseLayout title="Photo Video Gallery" description="Photos and videos from Samatvam – Jnana Sanjeevini.">
+  <PageHero
+    eyebrow="Photo Video Gallery"
+    title="Moments of service"
+    lead="Camps, celebrations, classrooms and clinics: a glimpse of life at Samatvam – Jnana Sanjeevini."
+    vtName="title-photos-gallery"
+  />
+
+  <section class="container-page py-16" aria-labelledby="videos-title">
+    <h2 id="videos-title" class="text-3xl font-bold text-brand" data-reveal>
+      Latest Videos
+    </h2>
+    <ul class="mt-8 grid gap-6 md:grid-cols-2">
+      {videos.map((v, i) => (
+        <li
+          class="card relative aspect-video overflow-hidden bg-black"
+          data-reveal
+          style={`--reveal-i:${i % 2}`}
+        >
+          <button
+            type="button"
+            class="group absolute inset-0 size-full"
+            data-youtube={v.id}
+            aria-label={`Play ${v.title}`}
+          >
+            <img
+              src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`}
+              alt=""
+              loading="lazy"
+              class="size-full object-cover opacity-85 transition duration-700 ease-out-expo group-hover:scale-105 group-hover:opacity-100"
+            />
+            <span class="absolute inset-0 grid place-items-center">
+              <span class="grid size-16 place-items-center rounded-full bg-white/90 text-navy shadow-xl transition duration-500 ease-out-expo group-hover:scale-110 group-hover:bg-accent group-hover:text-white">
+                <svg viewBox="0 0 24 24" class="ml-1 size-7" fill="currentColor" aria-hidden="true">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-3 text-xs text-muted">
+      Thumbnails are loaded from YouTube. The video player itself (privacy-enhanced mode) loads only when you
+      press play.
+    </p>
+  </section>
+
+  <section class="container-page pb-16" aria-labelledby="photos-title">
+    <h2 id="photos-title" class="text-3xl font-bold text-brand" data-reveal>
+      Latest Photos
+    </h2>
+    <ul class="mt-8 columns-2 gap-3 md:columns-3 lg:columns-4">
+      {galleryPhotos.map((name, i) => (
+        <li class="mb-3 break-inside-avoid" data-reveal style={`--reveal-i:${i % 4}`}>
+          <button
+            type="button"
+            class="group block w-full overflow-hidden rounded-xl border border-line bg-bg-soft"
+            data-lightbox-index={i}
+            aria-label={`Open photo ${i + 1}`}
+          >
+            <Image
+              src={media(name)}
+              alt={`Samatvam gallery photo ${i + 1}`}
+              widths={[360, 720, 1200]}
+              sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+              class="w-full transition duration-700 ease-out-expo group-hover:scale-[1.04]"
+            />
+          </button>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <dialog
+    class="lightbox m-auto max-h-none max-w-none bg-transparent p-0 backdrop:bg-black/85 backdrop:backdrop-blur"
+    aria-label="Photo viewer"
+    data-lightbox
+  >
+    <figure class="relative flex flex-col items-center">
+      <img data-lightbox-img alt="" class="max-h-[82vh] max-w-[92vw] rounded-xl object-contain shadow-2xl" />
+      <figcaption class="mt-4 flex items-center gap-3 text-white">
+        <button
+          type="button"
+          class="grid size-11 place-items-center rounded-full border border-white/30 hover:bg-white hover:text-black"
+          aria-label="Previous photo"
+          data-lightbox-prev
+        >
+          ←
+        </button>
+        <span class="min-w-20 text-center text-sm tabular-nums" data-lightbox-count></span>
+        <button
+          type="button"
+          class="grid size-11 place-items-center rounded-full border border-white/30 hover:bg-white hover:text-black"
+          aria-label="Next photo"
+          data-lightbox-next
+        >
+          →
+        </button>
+        <button
+          type="button"
+          class="ml-4 rounded-full border border-white/30 px-4 py-2 text-sm hover:bg-white hover:text-black"
+          data-dialog-close
+        >
+          Close
+        </button>
+      </figcaption>
+    </figure>
+  </dialog>
+
+  <RelatedLinks current="/photos-gallery/" />
+</BaseLayout>
+
+<style>
+  .lightbox[open] {
+    animation: zoom-in 0.4s var(--ease-out-expo);
+  }
+  @keyframes zoom-in {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+  }
+</style>

@@ -1,0 +1,179 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import { locations, directors, site, tel } from '@/data/site';
+import { url } from '@/lib/url';
+
+const groups = [...new Set(locations.map((l) => l.group))];
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT || '';
+const field =
+  'mt-1.5 w-full rounded-xl border border-line bg-bg px-4 py-3 text-fg placeholder:text-muted/70 transition focus:border-accent focus:ring-4 focus:ring-accent/15 focus:outline-none';
+---
+
+<BaseLayout
+  title="Contact Us"
+  description="Addresses, phone numbers, 24 hour helplines and email for Samatvam Endocrinology Diabetes Centers and Jnana Sanjeevini."
+>
+  <PageHero
+    eyebrow="Contact Us"
+    title="We are here to help"
+    lead="Four centers across Bangalore, each with a 24 hour helpline. Call, email, or send us a message."
+    vtName="title-contact-us"
+  />
+
+  <div class="container-page grid gap-14 py-16 lg:grid-cols-[1.25fr_1fr]">
+    <div class="space-y-12">
+      {groups.map((g) => (
+        <section aria-labelledby={g.replace(/\W+/g, '-')}>
+          <h2 id={g.replace(/\W+/g, '-')} class="text-2xl font-bold text-brand" data-reveal>
+            {g}
+          </h2>
+          <ul class="mt-6 grid gap-4 sm:grid-cols-2">
+            {locations
+              .filter((l) => l.group === g)
+              .map((l, i) => (
+                <li class="card flex flex-col p-6" data-reveal style={`--reveal-i:${i}`}>
+                  <p class="eyebrow">{l.area}</p>
+                  <a
+                    href={l.map}
+                    target="_blank"
+                    rel="noopener"
+                    class="mt-2 flex-1 leading-relaxed transition hover:text-accent"
+                  >
+                    {l.address}
+                    <span class="mt-1 block text-sm font-medium text-accent-strong dark:text-accent">
+                      Open in Maps ↗
+                    </span>
+                  </a>
+                  <dl class="mt-5 space-y-2 border-t border-line pt-4 text-sm">
+                    <div class="flex justify-between gap-3">
+                      <dt class="text-muted">Phone</dt>
+                      <dd class="text-right">
+                        {l.phones.map((p, k) => (
+                          <>
+                            {k > 0 && ', '}
+                            <a href={tel(p)} class="tabular-nums hover:text-accent">
+                              {p}
+                            </a>
+                          </>
+                        ))}
+                      </dd>
+                    </div>
+                    <div class="flex justify-between gap-3">
+                      <dt class="text-muted">24h Helpline</dt>
+                      <dd>
+                        <a href={tel(l.helpline)} class="font-semibold tabular-nums hover:text-accent">
+                          {l.helpline}
+                        </a>
+                      </dd>
+                    </div>
+                    <div class="flex justify-between gap-3">
+                      <dt class="text-muted">Email</dt>
+                      <dd>
+                        <a href={`mailto:${l.email}`} class="break-all hover:text-accent">
+                          {l.email}
+                        </a>
+                      </dd>
+                    </div>
+                  </dl>
+                </li>
+              ))}
+          </ul>
+        </section>
+      ))}
+
+      <section aria-labelledby="directors-title">
+        <h2 id="directors-title" class="text-2xl font-bold text-brand" data-reveal>
+          Medical Directors: Senior Consultants Endocrinology Diabetes
+        </h2>
+        <ul class="mt-6 grid gap-4">
+          {directors.map((d, i) => (
+            <li class="card p-6" data-reveal style={`--reveal-i:${i}`}>
+              <h3 class="text-xl font-semibold">
+                {d.href ? (
+                  <a href={url(d.href)} class="hover:text-accent">
+                    {d.name}
+                  </a>
+                ) : (
+                  d.name
+                )}
+              </h3>
+              <p class="mt-1 text-sm font-medium text-brand">{d.credentials}</p>
+              <p class="mt-1 text-sm text-muted">{d.training}</p>
+              <a
+                href={`mailto:${d.email}`}
+                class="mt-3 inline-block text-sm font-medium text-accent-strong dark:text-accent"
+              >
+                {d.email}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+
+    <aside>
+      <form
+        class="card sticky top-32 space-y-5 p-7"
+        data-contact-form
+        data-endpoint={endpoint}
+        data-to={site.email}
+        data-reveal
+        novalidate
+      >
+        <div>
+          <p class="eyebrow">Write to us</p>
+          <h2 class="mt-2 text-3xl font-bold text-brand">Send a message</h2>
+          <p class="mt-2 text-sm text-muted">
+            {endpoint
+              ? 'We will get back to you soon.'
+              : `This opens your email app with the message addressed to ${site.email}.`}
+          </p>
+        </div>
+        <label class="block text-sm font-medium">
+          Name
+          <input name="name" required autocomplete="name" class={field} placeholder="Your full name" />
+        </label>
+        <label class="block text-sm font-medium">
+          Mobile
+          <input
+            name="mobile"
+            type="tel"
+            required
+            autocomplete="tel"
+            pattern="[0-9+\s\-]{7,15}"
+            class={field}
+            placeholder="+91 …"
+          />
+        </label>
+        <label class="block text-sm font-medium">
+          Email
+          <input
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            class={field}
+            placeholder="you@example.com"
+          />
+        </label>
+        <label class="block text-sm font-medium">
+          Message
+          <textarea name="message" required rows="5" class={field} placeholder="How can we help?"></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary w-full justify-center py-3 disabled:opacity-60">
+          Submit
+        </button>
+        <p
+          class="min-h-5 text-sm data-[ok=false]:text-red-600 data-[ok=true]:text-leaf"
+          role="status"
+          aria-live="polite"
+          data-form-status
+        ></p>
+        <p class="text-xs text-muted">
+          For medical emergencies please call a 24 hour helpline rather than using this form.
+        </p>
+      </form>
+    </aside>
+  </div>
+</BaseLayout>

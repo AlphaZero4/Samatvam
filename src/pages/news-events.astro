@@ -1,0 +1,20 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import DocList from '@/components/DocList.astro';
+import RelatedLinks from '@/components/RelatedLinks.astro';
+import { newsEvents } from '@/data/content';
+---
+
+<BaseLayout title="News and Events" description="Press coverage, reports and events from Samatvam.">
+  <PageHero
+    eyebrow="News and Events"
+    title="Latest news and events"
+    lead="Press coverage, progress reports and stories from our community."
+    vtName="title-news-events"
+  />
+  <div class="container-page py-16">
+    <DocList docs={newsEvents} />
+  </div>
+  <RelatedLinks current="/news-events/" />
+</BaseLayout>

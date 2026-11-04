@@ -1,0 +1,45 @@
+---
+import { exploreNav } from '@/data/site';
+import { url } from '@/lib/url';
+
+interface Props {
+  current?: string;
+}
+const { current } = Astro.props;
+const items = exploreNav.filter((n) => n.href !== current).slice(0, 4);
+---
+
+<section class="container-page mt-8" aria-labelledby="related-title">
+  <div class="card overflow-hidden p-8 md:p-10" data-reveal>
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="eyebrow">Keep exploring</p>
+        <h2 id="related-title" class="mt-2 text-3xl font-bold text-brand">
+          More from Samatvam
+        </h2>
+      </div>
+      <a href={url('/contact-us/')} class="btn btn-primary">
+        Contact us →
+      </a>
+    </div>
+    <ul class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {items.map((n) => (
+        <li>
+          <a
+            href={url(n.href)}
+            class="group block h-full rounded-2xl border border-line bg-bg p-5 transition duration-500 ease-out-expo hover:-translate-y-1 hover:border-accent hover:shadow-card"
+          >
+            <span class="font-display text-lg font-semibold">{n.label}</span>
+            <span class="mt-1 block text-sm text-muted">{n.blurb}</span>
+            <span
+              class="mt-4 inline-block text-accent transition group-hover:translate-x-1"
+              aria-hidden="true"
+            >
+              →
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

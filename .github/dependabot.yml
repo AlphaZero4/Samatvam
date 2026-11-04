@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      astro:
+        patterns: ['astro', '@astrojs/*']
+      tailwind:
+        patterns: ['tailwindcss', '@tailwindcss/*']
+    ignore:
+      # Astro 7.4+ needs Node >= 22.23; bump .nvmrc/local Node before allowing it.
+      - dependency-name: astro
+        versions: ['>=7.4.0']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

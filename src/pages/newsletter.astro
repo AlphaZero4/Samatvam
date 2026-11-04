@@ -1,0 +1,20 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import DocList from '@/components/DocList.astro';
+import RelatedLinks from '@/components/RelatedLinks.astro';
+import { newsletters } from '@/data/content';
+---
+
+<BaseLayout title="Newsletter" description="Samatvam newsletters: Swasthya, research and charity updates.">
+  <PageHero
+    eyebrow="Newsletter"
+    title="Our latest newsletters"
+    lead="Updates on care, research and charity from Samatvam – Jnana Sanjeevini."
+    vtName="title-newsletter"
+  />
+  <div class="container-page py-16">
+    <DocList docs={newsletters} />
+  </div>
+  <RelatedLinks current="/newsletter/" />
+</BaseLayout>

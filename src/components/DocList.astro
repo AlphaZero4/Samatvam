@@ -1,0 +1,33 @@
+---
+import type { Doc } from '@/data/content';
+import { url } from '@/lib/url';
+
+interface Props {
+  docs: Doc[];
+}
+const { docs } = Astro.props;
+---
+
+<ul class="grid gap-4 md:grid-cols-2">
+  {docs.map((d, i) => (
+    <li data-reveal style={`--reveal-i:${i % 2}`}>
+      <a
+        href={url(`/docs/${d.file}`)}
+        target="_blank"
+        rel="noopener"
+        class="group card flex h-full items-center gap-5 p-6 transition duration-500 ease-out-expo hover:-translate-y-1 hover:border-accent/60"
+      >
+        <span class="grid size-14 shrink-0 place-items-center rounded-2xl bg-accent/10 text-xs font-bold text-accent transition duration-500 ease-out-expo group-hover:rotate-[-6deg] group-hover:bg-accent group-hover:text-white">
+          PDF
+        </span>
+        <span class="min-w-0 flex-1">
+          <span class="block font-display text-lg leading-snug font-semibold">{d.title}</span>
+          <span class="mt-1 block text-sm text-muted">{d.size}</span>
+        </span>
+        <span class="text-accent transition group-hover:translate-x-1" aria-hidden="true">
+          ↗
+        </span>
+      </a>
+    </li>
+  ))}
+</ul>

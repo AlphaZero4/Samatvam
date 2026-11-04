@@ -1,0 +1,63 @@
+name: Deploy to GitHub Pages
+
+# Every push to main is checked, built and published to
+# https://alphazero4.github.io/Samatvam/
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Type check
+        run: npm run check
+
+      - name: Build
+        env:
+          # Public, build-time values. Override per repo in Settings → Variables.
+          SITE_URL: ${{ vars.SITE_URL || 'https://alphazero4.github.io' }}
+          SITE_BASE: ${{ vars.SITE_BASE || '/Samatvam' }}
+          PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL || 'samatvam@gmail.com' }}
+          PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
+        run: npm run build
+
+      - name: Internal links
+        env:
+          SITE_BASE: ${{ vars.SITE_BASE || '/Samatvam' }}
+        run: npm run check:links
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5
